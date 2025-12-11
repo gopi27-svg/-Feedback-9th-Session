@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDC Session Feedback</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Brand Colors */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-color: #764ba2;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --gold-star: #fbbf24;
+            --white-glass: rgba(255, 255, 255, 0.96);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Animated Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--white-glass);
+            width: 100%;
+            max-width: 650px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Logo Styling */
+        .logo-header {
+            text-align: center;
+            padding-top: 40px;
+            padding-bottom: 10px;
+        }
+
+        .logo-img {
+            max-width: 200px;
+            height: auto;
+            /* This blend mode removes the white box background visually */
+            mix-blend-mode: multiply; 
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Content Areas */
+        .page-content {
+            padding: 30px 50px 50px 50px;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        h2 {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        p {
+            color: var(--text-light);
+            line-height: 1.7;
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        /* Gradient Button */
+        .btn-grad {
+            background-image: var(--primary-gradient);
+            text-transform: uppercase;
+            padding: 15px 45px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.4);
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            letter-spacing: 1px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-grad:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(118, 75, 162, 0.5);
+        }
+
+        .btn-grad:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Question Cards */
+        .question-block {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+
+        .question-block:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+        }
+
+        .label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        /* Star Rating System */
+        .stars-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .stars {
+            display: flex;
+            gap: 12px;
+        }
+
+        .star-icon {
+            font-size: 2.2rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .star-icon:hover {
+            transform: scale(1.2);
+            color: #ffe082;
+        }
+
+        .star-icon.active {
+            color: var(--gold-star);
+        }
+
+        /* Dynamic Rating Text */
+        .rating-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-top: 8px;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .rating-text.visible {
+            opacity: 1;
+        }
+
+        /* Text Area */
+        textarea {
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        /* Utilities */
+        .hidden { display: none; }
+        
+        .closing-text {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin: 30px 0 20px 0;
+            font-weight: 500;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Success Checkmark */
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            background: #48bb78;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+        .checkmark-circle svg { width: 40px; height: 40px; fill: white; }
+
+        /* Loader */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #764ba2;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 480px) {
+            .page-content { padding: 25px; }
+            h2 { font-size: 1.5rem; }
+            .logo-img { max-width: 160px; }
+            .star-icon { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card">
+        
+        <!-- LOGO -->
+        <div class="logo-header">
+            <img src="https://i.postimg.cc/pTJQwfkV/USDC-Theme.jpg" alt="Company Logo" class="logo-img">
+        </div>
+
+        <!-- PAGE 1: WELCOME -->
+        <div id="welcomePage" class="page-content">
+            <h2>Welcome Back!</h2>
+            <p>Thank you for joining our session on <strong>9th December</strong>. We truly value the energy and insights you brought to the program.</p>
+            <p>To help us deliver even more impact in the future, we invite you to share your feedback.</p>
+            
+            <button class="btn-grad" onclick="goToForm()">Start Feedback</button>
+        </div>
+
+        <!-- PAGE 2: FORM -->
+        <div id="formPage" class="page-content hidden">
+            <h2 style="font-size: 1.5rem; margin-bottom: 30px;">Your Feedback Matters</h2>
+            
+            <form id="feedbackForm" onsubmit="submitForm(event)">
+                
+                <!-- Q1 -->
+                <div class="question-block">
+                    <label class="label">1. Effectiveness in improving team bonding</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q1">
+                            <span class="star-icon" onclick="rate('q1', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q1', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q1', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q1', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q1', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q1">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q1" required>
+                </div>
+
+                <!-- Q2 -->
+                <div class="question-block">
+                    <label class="label">2. Comfort & engagement during ice-breaking</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q2">
+                            <span class="star-icon" onclick="rate('q2', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q2', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q2', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q2', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q2', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q2">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q2" required>
+                </div>
+
+                <!-- Q3 -->
+                <div class="question-block">
+                    <label class="label">3. Facilitator’s delivery & coordination</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q3">
+                            <span class="star-icon" onclick="rate('q3', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q3', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q3', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q3', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q3', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q3">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q3" required>
+                </div>
+
+                <!-- Q4 -->
+                <div class="question-block">
+                    <label class="label">4. Overall enjoyment & interaction</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q4">
+                            <span class="star-icon" onclick="rate('q4', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q4', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q4', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q4', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q4', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q4">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q4" required>
+                </div>
+
+                <!-- Q5 -->
+                <div class="question-block">
+                    <label class="label">5. Likelihood of future participation</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q5">
+                            <span class="star-icon" onclick="rate('q5', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q5', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q5', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q5', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q5', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q5">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q5" required>
+                </div>
+
+                <!-- Q6 -->
+                <div class="question-block" style="border-left-color: #764ba2;">
+                    <label class="label">6. Any suggestions?</label>
+                    <textarea id="input_suggestion" rows="4" placeholder="We'd love to hear your thoughts..."></textarea>
+                </div>
+
+                <div class="closing-text">
+                    Thank you in advance for your support and cooperation.
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <button type="submit" id="submitBtn" class="btn-grad">Submit Feedback</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PAGE 3: SUCCESS -->
+        <div id="successPage" class="page-content hidden" style="text-align: center; padding-top: 50px;">
+            <div class="checkmark-circle">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h2 style="color: #48bb78;">Thank You!</h2>
+            <p>Your feedback has been successfully recorded.<br>We appreciate your time.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // YOUR GOOGLE SCRIPT WEB APP URL
+        // ----------------------------------------------------
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwiEA84_jWPMmwSXWq8imuntYlSc2zqM2lqJoNKUypv6mcHWoitS7K6wBz7QIBj4SYAnA/exec";
+        // ----------------------------------------------------
+
+        // Navigation Animation
+        function goToForm() {
+            const welcome = document.getElementById('welcomePage');
+            const form = document.getElementById('formPage');
+            
+            welcome.style.opacity = '0';
+            welcome.style.transform = 'translateY(-20px)';
+            welcome.style.transition = 'all 0.4s ease';
+
+            setTimeout(() => {
+                welcome.classList.add('hidden');
+                form.classList.remove('hidden');
+                window.scrollTo(0, 0);
+            }, 400);
+        }
+
+        // Rating Labels
+        const ratingLabels = [
+            "Poor",        // 1 Star
+            "Average",     // 2 Stars
+            "Good",        // 3 Stars
+            "Very Good",   // 4 Stars
+            "Excellent"    // 5 Stars
+        ];
+
+        // Star Rating Logic
+        function rate(questionId, value) {
+            // Store numeric value (1-5) in hidden input
+            document.getElementById('input_' + questionId).value = value;
+            
+            // Visual Stars
+            const container = document.getElementById(questionId);
+            const stars = container.getElementsByClassName('star-icon');
+            
+            for(let i=0; i<stars.length; i++) {
+                if(i < value) {
+                    stars[i].classList.add('active');
+                } else {
+                    stars[i].classList.remove('active');
+                }
+            }
+
+            // Update Text Label
+            const textElement = document.getElementById('text_' + questionId);
+            textElement.innerText = ratingLabels[value - 1]; 
+            textElement.classList.add('visible');
+        }
+
+        // Form Submission Logic
+        function submitForm(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            
+            // 1. Validation: Check if all star ratings are filled
+            const q1 = document.getElementById('input_q1').value;
+            const q2 = document.getElementById('input_q2').value;
+            const q3 = document.getElementById('input_q3').value;
+            const q4 = document.getElementById('input_q4').value;
+            const q5 = document.getElementById('input_q5').value;
+
+            if(!q1 || !q2 || !q3 || !q4 || !q5) {
+                alert("Please select a star rating for all questions before submitting.");
+                return;
+            }
+
+            // 2. Show Loading State
+            btn.innerHTML = '<div class="loader"></div> Sending...';
+            btn.disabled = true;
+
+            // 3. Prepare Data (Convert 1-5 to Text Labels)
+            const formData = {
+                q1: ratingLabels[q1 - 1],
+                q2: ratingLabels[q2 - 1],
+                q3: ratingLabels[q3 - 1],
+                q4: ratingLabels[q4 - 1],
+                q5: ratingLabels[q5 - 1],
+                suggestion: document.getElementById('input_suggestion').value || "No suggestions"
+            };
+
+            // 4. Send to Google Sheets
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors', // Essential for sending to Google from external sites
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                }
+            })
+            .then(response => {
+                // Success Transition
+                const formPage = document.getElementById('formPage');
+                const successPage = document.getElementById('successPage');
+
+                formPage.style.opacity = '0';
+                formPage.style.transition = 'all 0.4s ease';
+
+                setTimeout(() => {
+                    formPage.classList.add('hidden');
+                    successPage.classList.remove('hidden');
+                }, 400);
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                btn.innerText = "Error! Try Again";
+                btn.disabled = false;
+                alert("There was a problem submitting your feedback. Please check your internet connection.");
+            });
+        }
+    </script>
+</body>
+</html>
