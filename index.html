@@ -46,7 +46,7 @@
         .glass-card {
             background: var(--white-glass);
             width: 100%;
-            max-width: 650px;
+            max-width: 700px; /* Slightly wider for longer questions */
             border-radius: 24px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.25);
             overflow: hidden;
@@ -66,7 +66,6 @@
         .logo-img {
             max-width: 200px;
             height: auto;
-            /* This blend mode removes the white box background visually */
             mix-blend-mode: multiply; 
             display: block;
             margin: 0 auto;
@@ -195,8 +194,11 @@
             opacity: 1;
         }
 
-        /* Text Area */
-        textarea {
+        /* Text Inputs & Text Area */
+        textarea, 
+        input[type="text"], 
+        input[type="number"],
+        select {
             width: 100%;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
@@ -204,11 +206,30 @@
             font-family: inherit;
             resize: vertical;
             transition: 0.3s;
+            background: #f8fafc;
+            font-size: 1rem;
+            color: var(--text-dark);
+            outline: none;
         }
 
-        textarea:focus {
-            outline: none;
+        textarea:focus, 
+        input[type="text"]:focus, 
+        input[type="number"]:focus,
+        select:focus {
             border-color: #764ba2;
+            background: #fff;
+        }
+        
+        /* Input Group Helper */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
         }
 
         /* Utilities */
@@ -278,10 +299,35 @@
             <p>Thank you for joining our session on <strong>9th December</strong>. We truly value the energy and insights you brought to the program.</p>
             <p>To help us deliver even more impact in the future, we invite you to share your feedback.</p>
             
-            <button class="btn-grad" onclick="goToForm()">Start Feedback</button>
+            <button class="btn-grad" onclick="goToDetails()">Start Feedback</button>
         </div>
 
-        <!-- PAGE 2: FORM -->
+        <!-- PAGE 2: EMPLOYEE DETAILS -->
+        <div id="detailsPage" class="page-content hidden">
+            <h2 style="font-size: 1.5rem; margin-bottom: 20px;">Participant Details</h2>
+            <p style="margin-bottom: 30px;">Please enter your details to proceed.</p>
+
+            <div class="input-group">
+                <label for="empName">Employee Name</label>
+                <input type="text" id="empName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="input-group">
+                <label for="empID">Employee ID</label>
+                <input type="text" id="empID" placeholder="e.g. 12345" required>
+            </div>
+
+            <div class="input-group">
+                <label for="dept">Department</label>
+                <input type="text" id="dept" placeholder="e.g. IT, HR, Sales" required>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn-grad" onclick="goToRatings()">Next</button>
+            </div>
+        </div>
+
+        <!-- PAGE 3: RATING FORM -->
         <div id="formPage" class="page-content hidden">
             <h2 style="font-size: 1.5rem; margin-bottom: 30px;">Your Feedback Matters</h2>
             
@@ -368,8 +414,120 @@
                 </div>
 
                 <!-- Q6 -->
+                <div class="question-block">
+                    <label class="label">6. Reduced siloed thinking and improved willingness to collaborate</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q6">
+                            <span class="star-icon" onclick="rate('q6', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q6', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q6', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q6', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q6', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q6">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q6" required>
+                </div>
+
+                <!-- Q7 -->
+                <div class="question-block">
+                    <label class="label">7. Stronger working relationships formed across functions</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q7">
+                            <span class="star-icon" onclick="rate('q7', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q7', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q7', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q7', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q7', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q7">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q7" required>
+                </div>
+
+                <!-- Q8 -->
+                <div class="question-block">
+                    <label class="label">8. Alignment to shared understanding of goals of expected outcome/result</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q8">
+                            <span class="star-icon" onclick="rate('q8', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q8', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q8', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q8', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q8', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q8">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q8" required>
+                </div>
+
+                <!-- Q9 -->
+                <div class="question-block">
+                    <label class="label">9. We had a unified leadership voice for our teams</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q9">
+                            <span class="star-icon" onclick="rate('q9', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q9', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q9', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q9', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q9', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q9">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q9" required>
+                </div>
+
+                <!-- Q10 -->
+                <div class="question-block">
+                    <label class="label">10. Enhanced cross-hierarchy participation in discussions and/or decisions</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q10">
+                            <span class="star-icon" onclick="rate('q10', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q10', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q10', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q10', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q10', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q10">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q10" required>
+                </div>
+
+                <!-- Q11 -->
+                <div class="question-block">
+                    <label class="label">11. Strengthened interpersonal trust through shared experiences</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q11">
+                            <span class="star-icon" onclick="rate('q11', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q11', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q11', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q11', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q11', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q11">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q11" required>
+                </div>
+
+                <!-- Q12 -->
+                <div class="question-block">
+                    <label class="label">12. Reduce communication barriers between senior and mid-level leaders</label>
+                    <div class="stars-wrapper">
+                        <div class="stars" id="q12">
+                            <span class="star-icon" onclick="rate('q12', 1)">★</span>
+                            <span class="star-icon" onclick="rate('q12', 2)">★</span>
+                            <span class="star-icon" onclick="rate('q12', 3)">★</span>
+                            <span class="star-icon" onclick="rate('q12', 4)">★</span>
+                            <span class="star-icon" onclick="rate('q12', 5)">★</span>
+                        </div>
+                        <div class="rating-text" id="text_q12">Select a rating</div>
+                    </div>
+                    <input type="hidden" id="input_q12" required>
+                </div>
+
+                <!-- Q13 (Suggestions) -->
                 <div class="question-block" style="border-left-color: #764ba2;">
-                    <label class="label">6. Any suggestions?</label>
+                    <label class="label">13. Any other suggestions?</label>
                     <textarea id="input_suggestion" rows="4" placeholder="We'd love to hear your thoughts..."></textarea>
                 </div>
 
@@ -383,7 +541,7 @@
             </form>
         </div>
 
-        <!-- PAGE 3: SUCCESS -->
+        <!-- PAGE 4: SUCCESS -->
         <div id="successPage" class="page-content hidden" style="text-align: center; padding-top: 50px;">
             <div class="checkmark-circle">
                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -398,13 +556,13 @@
         // ----------------------------------------------------
         // YOUR GOOGLE SCRIPT WEB APP URL
         // ----------------------------------------------------
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwiEA84_jWPMmwSXWq8imuntYlSc2zqM2lqJoNKUypv6mcHWoitS7K6wBz7QIBj4SYAnA/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyJy5S4ZRBMuyhrwuZVyruVHmYw7GncbnP7-4d-5uhxpQd58lo8UmIlJLMqFEuDjSG-/exec";
         // ----------------------------------------------------
 
-        // Navigation Animation
-        function goToForm() {
+        // 1. Welcome -> Details
+        function goToDetails() {
             const welcome = document.getElementById('welcomePage');
-            const form = document.getElementById('formPage');
+            const details = document.getElementById('detailsPage');
             
             welcome.style.opacity = '0';
             welcome.style.transform = 'translateY(-20px)';
@@ -412,6 +570,31 @@
 
             setTimeout(() => {
                 welcome.classList.add('hidden');
+                details.classList.remove('hidden');
+                window.scrollTo(0, 0);
+            }, 400);
+        }
+
+        // 2. Details -> Ratings (With Validation)
+        function goToRatings() {
+            const name = document.getElementById('empName').value.trim();
+            const id = document.getElementById('empID').value.trim();
+            const dept = document.getElementById('dept').value.trim();
+
+            if (!name || !id || !dept) {
+                alert("Please fill in all details (Name, ID, and Department) to proceed.");
+                return;
+            }
+
+            const details = document.getElementById('detailsPage');
+            const form = document.getElementById('formPage');
+
+            details.style.opacity = '0';
+            details.style.transform = 'translateY(-20px)';
+            details.style.transition = 'all 0.4s ease';
+
+            setTimeout(() => {
+                details.classList.add('hidden');
                 form.classList.remove('hidden');
                 window.scrollTo(0, 0);
             }, 400);
@@ -455,15 +638,15 @@
             
             const btn = document.getElementById('submitBtn');
             
-            // 1. Validation: Check if all star ratings are filled
-            const q1 = document.getElementById('input_q1').value;
-            const q2 = document.getElementById('input_q2').value;
-            const q3 = document.getElementById('input_q3').value;
-            const q4 = document.getElementById('input_q4').value;
-            const q5 = document.getElementById('input_q5').value;
-
-            if(!q1 || !q2 || !q3 || !q4 || !q5) {
-                alert("Please select a star rating for all questions before submitting.");
+            // 1. Validation: Check if all star ratings (1-12) are filled
+            // Helper function to check valid input
+            const isValid = (id) => document.getElementById(id).value !== "";
+            
+            if(!isValid('input_q1') || !isValid('input_q2') || !isValid('input_q3') || 
+               !isValid('input_q4') || !isValid('input_q5') || !isValid('input_q6') || 
+               !isValid('input_q7') || !isValid('input_q8') || !isValid('input_q9') || 
+               !isValid('input_q10') || !isValid('input_q11') || !isValid('input_q12')) {
+                alert("Please select a star rating for all 12 questions before submitting.");
                 return;
             }
 
@@ -471,20 +654,47 @@
             btn.innerHTML = '<div class="loader"></div> Sending...';
             btn.disabled = true;
 
-            // 3. Prepare Data (Convert 1-5 to Text Labels)
+            // Get Values
+            const q1 = document.getElementById('input_q1').value;
+            const q2 = document.getElementById('input_q2').value;
+            const q3 = document.getElementById('input_q3').value;
+            const q4 = document.getElementById('input_q4').value;
+            const q5 = document.getElementById('input_q5').value;
+            const q6 = document.getElementById('input_q6').value;
+            const q7 = document.getElementById('input_q7').value;
+            const q8 = document.getElementById('input_q8').value;
+            const q9 = document.getElementById('input_q9').value;
+            const q10 = document.getElementById('input_q10').value;
+            const q11 = document.getElementById('input_q11').value;
+            const q12 = document.getElementById('input_q12').value;
+
+            // 3. Prepare Data (Details + Ratings)
             const formData = {
+                // Details
+                empName: document.getElementById('empName').value,
+                empID: document.getElementById('empID').value,
+                department: document.getElementById('dept').value,
+                // Ratings 1-12 (Converted to Text)
                 q1: ratingLabels[q1 - 1],
                 q2: ratingLabels[q2 - 1],
                 q3: ratingLabels[q3 - 1],
                 q4: ratingLabels[q4 - 1],
                 q5: ratingLabels[q5 - 1],
+                q6: ratingLabels[q6 - 1],
+                q7: ratingLabels[q7 - 1],
+                q8: ratingLabels[q8 - 1],
+                q9: ratingLabels[q9 - 1],
+                q10: ratingLabels[q10 - 1],
+                q11: ratingLabels[q11 - 1],
+                q12: ratingLabels[q12 - 1],
+                // Suggestions
                 suggestion: document.getElementById('input_suggestion').value || "No suggestions"
             };
 
             // 4. Send to Google Sheets
             fetch(scriptURL, {
                 method: 'POST',
-                mode: 'no-cors', // Essential for sending to Google from external sites
+                mode: 'no-cors', 
                 body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8',
